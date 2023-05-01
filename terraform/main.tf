@@ -68,6 +68,12 @@ resource "aws_lambda_permission" "allow_bucket" {
   source_arn    = aws_s3_bucket.bucket[count.index].arn
 }
 
+resource "time_sleep" "wait_30_seconds" {
+  depends_on = [aws_lambda_function.python_lambda]
+
+  create_duration = "30s"
+}
+
 
 resource "aws_s3_bucket_notification" "bucket_notification" {
   
@@ -81,6 +87,7 @@ resource "aws_s3_bucket_notification" "bucket_notification" {
   }
 
   depends_on = [
-    aws_lambda_function.python_lambda
+    aws_lambda_function.python_lambda,
+    time_sleep.wait_30_seconds
   ]
 }
